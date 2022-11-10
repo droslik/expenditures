@@ -1,0 +1,47 @@
+version: "3.3"
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+     - .:/app
+    depends_on:
+      - postgres
+      - rabbit
+
+  rabbit:
+    container_name: expenditures_rabbit
+    restart: always
+    hostname: rabbit
+    image: rabbitmq:3.10.7-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    env_file:
+      - .env
+    volumes:
+      - /var/lib/rabbitmq/mnesia
+
+  worker:
+    build: .
+    command: ./run_celery.sh
+    depends_on:
+      - rabbit
+      - postgres
+    env_file:
+      - .env
+
+  postgres:
+    container_name: expend_postgres
+    restart: always
+    image: postgres:14
+    volumes:
+     - /var/lib/postgresql/expend/data/
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env

@@ -1,0 +1,13 @@
+SELECT notebooks_brand.title AS title, count(notebooks_notebook.title) AS count
+FROM notebooks_brand
+LEFT JOIN notebooks_notebook ON notebooks_brand.id = notebooks_notebook.brand_id
+GROUP BY title
+ORDER BY count DESC;
+
+
+
+SELECT CEIL(width/5)*5 AS width, CEIL(depth/5)*5 AS depth, CEIL(height/5)*5 AS height, count(*) AS count
+FROM notebooks_notebook
+GROUP BY CEIL(width/5)*5, CEIL(depth/5)*5, CEIL(height/5)*5
+ORDER BY CEIL(width/5)*5, CEIL(depth/5)*5, CEIL(height/5)*5 DESC;
+
